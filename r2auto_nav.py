@@ -36,6 +36,7 @@ mapfile = 'map.txt'
 
 # code from https://automaticaddison.com/how-to-convert-a-quaternion-into-euler-angles-in-python/
 def euler_from_quaternion(x, y, z, w):
+    print("euler")
     """
     Convert a quaternion into euler angles (roll, pitch, yaw)
     roll is rotation around x in radians (counterclockwise)
@@ -60,6 +61,7 @@ def euler_from_quaternion(x, y, z, w):
 class AutoNav(Node):
 
     def __init__(self):
+        print("init")
         super().__init__('auto_nav')
         
         # create publisher for moving TurtleBot
@@ -99,12 +101,14 @@ class AutoNav(Node):
 
 
     def odom_callback(self, msg):
+        print("odom callback")
         # self.get_logger().info('In odom_callback')
         orientation_quat =  msg.pose.pose.orientation
         self.roll, self.pitch, self.yaw = euler_from_quaternion(orientation_quat.x, orientation_quat.y, orientation_quat.z, orientation_quat.w)
 
 
     def occ_callback(self, msg):
+        print("occ callback")
         # self.get_logger().info('In occ_callback')
         # create numpy array
         msgdata = np.array(msg.data)
@@ -125,6 +129,7 @@ class AutoNav(Node):
 
 
     def scan_callback(self, msg):
+        print("scan callback")
         # self.get_logger().info('In scan_callback')
         # create numpy array
         self.laser_range = np.array(msg.ranges)
@@ -136,6 +141,7 @@ class AutoNav(Node):
 
     # function to rotate the TurtleBot
     def rotatebot(self, rot_angle):
+        print("rotatebot")
         # self.get_logger().info('In rotatebot')
         # create Twist object
         twist = Twist()
@@ -189,6 +195,7 @@ class AutoNav(Node):
 
 
     def pick_direction(self):
+        print("pick direction",self.laser_range)
         # self.get_logger().info('In pick_direction')
         if self.laser_range.size != 0:
             # use nanargmax as there are nan's in laser_range added to replace 0's
@@ -213,6 +220,7 @@ class AutoNav(Node):
 
 
     def stopbot(self):
+        print("stopbot")
         self.get_logger().info('In stopbot')
         # publish to cmd_vel to move TurtleBot
         twist = Twist()
@@ -223,6 +231,7 @@ class AutoNav(Node):
 
 
     def mover(self):
+        print("mover")
         try:
             # initialize variable to write elapsed time to file
             # contourCheck = 1
@@ -260,6 +269,7 @@ class AutoNav(Node):
 
 
 def main(args=None):
+    print("main")
     rclpy.init(args=args)
 
     auto_nav = AutoNav()
